@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Helper</title>
+    <style>
+        /* Add your existing styles here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Study Helper</h1>
+        <p>Welcome to the ultimate resource for students and readers! Type your question below and let AI find the best answers for you.</p>
+        <input type="text" id="userInput" placeholder="What do you want to learn today?">
+        <button onclick="fetchAnswer()">Find Answers</button>
+        <div id="response" class="response"></div>
+    </div>
+    <footer>
+        <p>Powered by AI | Designed for learners and curious minds. <a href="#">Learn more</a>.</p>
+    </footer>
+
+    <script>
+        async function fetchAnswer() {
+            const userInput = document.getElementById('userInput').value;
+            const responseDiv = document.getElementById('response');
+
+            if (!userInput) {
+                responseDiv.innerHTML = "<p>Please enter a question.</p>";
+                return;
+            }
+
+            responseDiv.innerHTML = "<p>Searching for the best answer...</p>";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/ask", { // Ensure this matches your Flask URL
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ question: userInput }),
+                });
+
+                const data = await response.json();
+
+                if (data.answer) {
+                    responseDiv.innerHTML = `<p>${data.answer}</p>`;
+                } else {
+                    responseDiv.innerHTML = "<p>Sorry, no response received.</p>";
+                }
+            } catch (error) {
+                responseDiv.innerHTML = "<p>Sorry, something went wrong. Please try again later.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
